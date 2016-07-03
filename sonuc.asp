@@ -9,8 +9,17 @@ Function iPosProcess(serviceUrl, requestXML)
 		Set PostConnection = Nothing
 End Function
 ' -------------------------------------------------------------
-	taksit = session("karttk")
-	uyeno = "934566782"
+Function IPAdres
+	If request.servervariables("HTTP_VIA") <> "" Then
+		IPAdres = request.servervariables("HTTP_X_FORWARDED_FOR")
+	Else
+		IPAdres = request.servervariables("REMOTE_ADDR")
+	End If
+End Function
+' -------------------------------------------------------------
+
+	taksit	 = session("karttk")
+	uyeno	 = "934566782"
 	uyesifre = "911455678"
 	
 	PosXML = "<?xml version=""1.0"" encoding=""utf-8""?>"
@@ -36,14 +45,14 @@ End Function
 		PosXML = PosXML & "<ECI>" & Request.Form("Eci") &"</ECI>"
 		PosXML = PosXML & "<CAVV>" & Request.Form("Cavv") &"</CAVV>"
 		PosXML = PosXML & "<MpiTransactionId>" & Request.Form("VerifyEnrollmentRequestId") &"</MpiTransactionId>"
-		PosXML = PosXML & "<ClientIp>"&IP&"</ClientIp>"
+		PosXML = PosXML & "<ClientIp>"&IPAdres&"</ClientIp>"
 		PosXML = PosXML & "<TransactionDeviceSource>0</TransactionDeviceSource>"
 	PosXML = PosXML & "</VposRequest>"
 	
-	session("karttp")="abandon"
-	session("kartno")="abandon"
-	session("kartcv")="abandon"
-	session("karttk")="abandon"
+	session("karttp") = "abandon"
+	session("kartno") = "abandon"
+	session("kartcv") = "abandon"
+	session("karttk") = "abandon"
 	
 	  PostUrl="https://onlineodeme.vakifbank.com.tr:4443/VposService/v3/Vposreq.aspx"
 		result = iPosProcess(PostUrl,  "prmstr=" + PosXML)
