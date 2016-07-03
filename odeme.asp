@@ -34,33 +34,37 @@ Function GetGuid()
 End Function
 ' ---------------------------------------
 
-toplam="1.00"
-taksit=""
-kkno="5549604812345678"
-kkay="01"
-kkyil="2020"
-kkcvv="123"
-uyeno="934566782"
-uyesifre="911455678"
-donusURL="http://www.siteadi.com/sonuc.asp"
+toplam	 = "1.00"
+taksit	 = ""
+kkno	 = "5549604812345678"
+kkay	 = "01"
+kkyil	 = "2020"
+kkcvv	 = "123"
+uyeno	 = "934566782"
+uyesifre = "911455678"
+donusURL = "http://www.siteadi.com/sonuc.asp"
 
-	mpiServiceUrl=	"https://3dsecure.vakifbank.com.tr:4443/MPIAPI/MPI_Enrollment.aspx"
-	krediKartiNumarasi = trim(kkno)
-	sonKullanmaTarihi = right("00"&kkyil,2)&right("00"&kkay,2)
-	if left(kkno,1)="4" then kartTipi="100" else kartTipi="200" : end if
-	tutar = toplam
-	paraKodu = "949"
-	taksitSayisi=taksit
-	islemNumarasi = GetGuid()
-	uyeIsyeriNumarasi = right("000000000000000"&uyeno,15)
-	uyeIsYeriSifresi = uyesifre
-	SuccessURL = donusURL
-	FailureURL = donusURL
-	ekVeri = "1"
-	params = "Pan="+krediKartiNumarasi+"&ExpiryDate="+sonKullanmaTarihi+"&PurchaseAmount="+tutar+"&Currency="+paraKodu+"&BrandName="+kartTipi+"&VerifyEnrollmentRequestId="+islemNumarasi+"&SessionInfo="+ekVeri+"&MerchantId="+uyeIsyeriNumarasi+"&MerchantPassword="+uyeIsYeriSifresi+"&SuccessURL="+SuccessURL+"&FailureURL="+FailureURL+"&InstallmentCount="+taksitSayisi
-	resultXml = iPosProcess(mpiServiceUrl,params)
-	result = xmlParser(resultXml)
+	mpiServiceUrl		= "https://3dsecure.vakifbank.com.tr:4443/MPIAPI/MPI_Enrollment.aspx"
+	krediKartiNumarasi	= trim(kkno)
+	sonKullanmaTarihi	= right("00"&kkyil,2)&right("00"&kkay,2)
+	if left(kkno,1) = "4" then kartTipi = "100" else kartTipi = "200" : end if
+	tutar			= toplam
+	paraKodu		= "949"
+	taksitSayisi		= taksit
+	islemNumarasi		= GetGuid()
+	uyeIsyeriNumarasi	= right("000000000000000"&uyeno,15)
+	uyeIsYeriSifresi	= uyesifre
+	SuccessURL		= donusURL
+	FailureURL		= donusURL
+	ekVeri			= "1"
+	params			= "Pan="+krediKartiNumarasi+"&ExpiryDate="+sonKullanmaTarihi+"&PurchaseAmount="+tutar+"&Currency="+paraKodu+"&BrandName="+kartTipi+"&VerifyEnrollmentRequestId="+islemNumarasi+"&SessionInfo="+ekVeri+"&MerchantId="+uyeIsyeriNumarasi+"&MerchantPassword="+uyeIsYeriSifresi+"&SuccessURL="+SuccessURL+"&FailureURL="+FailureURL+"&InstallmentCount="+taksitSayisi
+	resultXml		= iPosProcess(mpiServiceUrl,params)
+	result			= xmlParser(resultXml)
 		If result(0)="Y" Then
+			session("kartno") = kkno
+			session("kartcv") = kkcvv
+			session("karttp") = toplam
+			session("karttk") = taksitSayisi
 			Response.Clear
 			Response.Write("<html>")
 			Response.Write("<head>")
